@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>MediCare Clinic | Professional Healthcare System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background: #f0f4f8;
+      min-height: 100vh;
+    }
+
+    /* Auth Forms */
+    .form-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: linear-gradient(145deg, #0a2b3e 0%, #1a4a6f 100%);
+      position: relative;
+    }
+    .form-container::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
+      opacity: 0.2;
+    }
+    .form-card {
+      position: relative;
+      background: rgba(255,255,255,0.98);
+      max-width: 500px;
+      width: 100%;
+      padding: 2.5rem;
+      border-radius: 32px;
+      box-shadow: 0 30px 50px rgba(0,0,0,0.3);
+      animation: slideUp 0.4s ease;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .logo-area { text-align: center; margin-bottom: 1.8rem; }
+    .logo-icons {
+      display: inline-flex;
+      gap: 0.8rem;
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      padding: 0.8rem 1.5rem;
+      border-radius: 60px;
+      margin-bottom: 1rem;
+    }
+    .logo-icons i { font-size: 2rem; color: white; }
+    .form-card h1 { font-size: 2rem; color: #0a2540; }
+    .tagline { color: #5f7f9e; font-size: 0.9rem; margin-top: 0.25rem; }
+    input, select, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      margin: 10px 0;
+      border-radius: 16px;
+      border: 1.5px solid #e2e8f0;
+      font-size: 0.95rem;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(95deg, #1a73e8, #0d47a1);
+      color: white;
+      border: none;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 16px;
+    }
+    button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26,115,232,0.3); }
+    .switch-text { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: #4a627a; }
+    .switch-text a { color: #1a73e8; font-weight: 600; cursor: pointer; text-decoration: none; }
+    .error-msg { color: #d32f2f; font-size: 0.75rem; margin-top: -6px; margin-bottom: 8px; display: block; }
+
+    /* Dashboard Layout */
+    .dashboard-wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    .top-bar {
+      background: white;
+      padding: 0.8rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      border-bottom: 1px solid #eef2f6;
+      position: relative;
+      z-index: 10;
+    }
+    .logo-header { display: flex; align-items: center; gap: 12px; }
+    .logo-header .logo-icons-sm {
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+    }
+    .logo-header .logo-icons-sm i { color: white; font-size: 1.2rem; }
+    .logo-header h2 { color: #0a2540; font-weight: 700; }
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: #f1f5f9;
+      padding: 0.4rem 1.2rem 0.4rem 1rem;
+      border-radius: 60px;
+    }
+    .user-info { text-align: right; }
+    .user-name { font-weight: 700; color: #0f2b3d; font-size: 0.9rem; }
+    .user-role { font-size: 0.7rem; color: #5f7f9e; }
+    .avatar {
+      width: 42px; height: 42px;
+      background: linear-gradient(145deg, #1a73e8, #0d47a1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .logout-btn {
+      background: transparent;
+      color: #dc2626;
+      width: auto;
+      padding: 6px 14px;
+      margin: 0;
+      font-size: 0.8rem;
+      border-radius: 40px;
+    }
+    .logout-btn:hover { background: #fee2e2; transform: none; }
+
+    .main-layout { display: flex; flex: 1; }
+    
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: white;
+      border-right: 1px solid #eef2f6;
+      padding: 1.5rem 0;
+      position: relative;
+      z-index: 10;
+    }
+    .sidebar ul { list-style: none; padding: 0 1rem; }
+    .sidebar li { margin: 0.25rem 0; }
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 18px;
+      border-radius: 60px;
+      text-decoration: none;
+      color: #334155;
+      font-weight: 500;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+    .sidebar a i { width: 24px; color: #5f7f9e; font-size: 1.1rem; }
+    .sidebar a:hover, .sidebar .active { background: #eef3fc; color: #1a73e8; }
+    .content-area {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Home Dashboard with Background Image */
+    .home-dashboard {
+      background: linear-gradient(145deg, #0a2b3e 0%, #1a4a6f 100%);
+      position: relative;
+      min-height: calc(100vh - 70px);
+      border-radius: 28px;
+      overflow: hidden;
+    }
+    .home-dashboard::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+    .home-content {
+      position: relative;
+      z-index: 5;
+      padding: 2rem;
+    }
+
+    /* Professional Calendar Styles */
+    .calendar-container {
+      background: white;
+      border-radius: 28px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .calendar-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0a2540;
+    }
+    .calendar-nav {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .calendar-nav button {
+      width: auto;
+      padding: 8px 16px;
+      margin: 0;
+      background: #f1f5f9;
+      color: #1a73e8;
+      font-size: 0.9rem;
+    }
+    .calendar-nav button:hover { background: #e2e8f0; transform: none; }
+    
+    .booking-action {
+      margin-bottom: 1.5rem;
+      text-align: right;
+    }
+    .btn-primary {
+      background: linear-gradient(95deg, #1a73e8, #0d47a1);
+      padding: 12px 24px;
+      width: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-weight: 600;
+      color: #5f7f9e;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #eef2f6;
+      margin-bottom: 0.5rem;
+    }
+    .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+    .calendar-day {
+      min-height: 130px;
+      background: #ffffff;
+      border: 1px solid #eef2f6;
+      border-radius: 16px;
+      padding: 8px;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+    .calendar-day:hover {
+      border-color: #1a73e8;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .calendar-day.other-month {
+      background: #fafcff;
+      opacity: 0.6;
+    }
+    .calendar-day.today {
+      border: 2px solid #1a73e8;
+      background: #f0f7ff;
+    }
+    .calendar-day.past-date {
+      background: #f8fafc;
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .calendar-day.past-date:hover {
+      border-color: #e2e8f0;
+      box-shadow: none;
+    }
+    .day-number {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #334155;
+      margin-bottom: 8px;
+    }
+    .appointment-blocks {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .appointment-block {
+      background: linear-gradient(95deg, #1a73e8, #0d47a1);
+      color: white;
+      padding: 4px 6px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: 0.1s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    /* Cancelled appointment style - red color */
+    .appointment-block.cancelled {
+      background: linear-gradient(95deg, #dc2626, #b91c1c);
+      text-decoration: line-through;
+      opacity: 0.8;
+    }
+    .appointment-block:hover {
+      transform: scale(1.02);
+      filter: brightness(1.05);
+    }
+    .empty-slot {
+      font-size: 0.65rem;
+      color: #94a3b8;
+      padding: 2px;
+      text-align: center;
+    }
+    
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      border-radius: 28px;
+      padding: 2rem;
+      max-width: 450px;
+      width: 90%;
+    }
+    .modal-content h3 { margin-bottom: 1rem; }
+    .modal-buttons { display: flex; gap: 1rem; margin-top: 1rem; }
+    .modal-buttons button { margin: 0; width: auto; flex: 1; }
+    
+    .card {
+      background: white;
+      border-radius: 28px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+    }
+    .doctor-card {
+      background: white;
+      border-radius: 24px;
+      padding: 1rem;
+      border: 1px solid #eef2f8;
+      transition: 0.2s;
+    }
+    .doctor-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    .doctor-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 20px;
+    }
+    .btn-sm {
+      background: #1a73e8;
+      padding: 8px 18px;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      width: auto;
+      margin-top: 10px;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1.5rem; }
+    .appointment-item { border-left: 4px solid #1a73e8; background: #fff; padding: 1rem; margin-bottom: 1rem; border-radius: 16px; }
+    .badge { background: #e0f2fe; padding: 2px 8px; border-radius: 20px; font-size: 0.7rem; }
+    
+    /* Professional Reviews */
+    .review-card {
+      background: white;
+      border-radius: 20px;
+      padding: 1.5rem;
+      border: 1px solid #eef2f8;
+      transition: 0.2s;
+    }
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .reviewer-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .reviewer-avatar {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .reviewer-name h4 { color: #0a2540; margin-bottom: 4px; }
+    .review-date { font-size: 0.7rem; color: #94a3b8; }
+    .review-rating { color: #fbbf24; font-size: 0.9rem; margin-top: 4px; }
+    .review-comment { color: #334155; line-height: 1.5; margin-top: 0.8rem; }
+    .review-doctor { font-size: 0.75rem; color: #1a73e8; margin-top: 0.8rem; }
+    
+    /* About Page */
+    .about-section {
+      background: white;
+      border-radius: 28px;
+      padding: 2rem;
+    }
+    .about-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .about-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .stat-box {
+      text-align: center;
+      padding: 1.5rem;
+      background: #f8fafc;
+      border-radius: 20px;
+    }
+    .stat-number { font-size: 2rem; font-weight: 700; color: #1a73e8; }
+    .stat-label { color: #5f7f9e; margin-top: 0.5rem; }
+    .about-text { color: #334155; line-height: 1.6; margin-bottom: 1rem; }
+    
+    @media (max-width: 800px) { 
+      .sidebar { width: 80px; } 
+      .sidebar a span { display: none; } 
+      .sidebar a { justify-content: center; } 
+      .calendar-day { min-height: 100px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- AUTH SECTION -->
+<div id="authSection" class="form-container">
+  <div id="loginCard" class="form-card">
+    <div class="logo-area"><div class="logo-icons"><i class="fas fa-stethoscope"></i><i class="fas fa-heart"></i></div><h1>MediCare Clinic</h1><div class="tagline">Precision care, compassionate heart</div></div>
+    <h2>Welcome Back</h2>
+    <input type="email" id="loginEmail" placeholder="Email" value="">
+    <input type="password" id="loginPassword" placeholder="Password" value="">
+    <button onclick="handleLogin()">Sign In →</button>
+    <p class="switch-text">New? <a onclick="showRegisterPanel()">Create account</a></p>
+    <div id="loginErrorMsg" class="error-msg" style="text-align:center; margin-top:10px;"></div>
+  </div>
+  <div id="registerCard" class="form-card" style="display:none;">
+    <div class="logo-area"><div class="logo-icons"><i class="fas fa-stethoscope"></i><i class="fas fa-heart"></i></div><h1>MediCare Clinic</h1><div class="tagline">Join our health family</div></div>
+    <h2>Create Account</h2>
+    <input type="text" id="regFullName" placeholder="Full name">
+    <input type="email" id="regEmail" placeholder="Email">
+    <input type="password" id="regPassword" placeholder="Password (8+ chars, 1 number, 1 special)">
+    <input type="password" id="regConfirm" placeholder="Confirm password">
+    <span id="regError" class="error-msg"></span>
+    <button onclick="handleRegister()">Register</button>
+    <p class="switch-text">Have account? <a onclick="showLoginPanel()">Sign in</a></p>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboardApp" style="display:none;">
+  <div class="dashboard-wrapper">
+    <div class="top-bar">
+      <div class="logo-header"><div class="logo-icons-sm"><i class="fas fa-stethoscope"></i><i class="fas fa-heart"></i></div><h2>MediCare Clinic</h2></div>
+      <div class="user-area"><div class="user-info"><div class="user-name" id="dashboardUserName">Patient</div><div class="user-role">Patient</div></div><div class="avatar" id="userAvatar">P</div><button class="logout-btn" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Exit</button></div>
+    </div>
+    <div class="main-layout">
+      <div class="sidebar"><ul>
+        <li><a onclick="switchSection('dashboard')" id="navDash" class="active"><i class="fas fa-home"></i><span> Dashboard</span></a></li>
+        <li><a onclick="switchSection('calendar')" id="navCal"><i class="fas fa-calendar-alt"></i><span> Calendar</span></a></li>
+        <li><a onclick="switchSection('appointments')" id="navApps"><i class="fas fa-list"></i><span> Appointments</span></a></li>
+        <li><a onclick="switchSection('doctors')" id="navDocs"><i class="fas fa-user-md"></i><span> Doctors</span></a></li>
+        <li><a onclick="switchSection('reviews')" id="navRev"><i class="fas fa-star"></i><span> Reviews</span></a></li>
+        <li><a onclick="switchSection('about')" id="navAbout"><i class="fas fa-info-circle"></i><span> About Us</span></a></li>
+      </ul></div>
+      <div class="content-area" id="dynamicContent"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Helper function to normalize date to YYYY-MM-DD in local timezone
+  function normalizeDate(dateInput) {
+    if (!dateInput) return null;
+    const date = new Date(dateInput);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  // 7 DOCTORS
+  const doctorsList = [
+    { id: 1, name: "Dr. Sarah Chen", specialty: "Cardiologist", experience: "14 years", rating: 4.9, img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=300&fit=crop" },
+    { id: 2, name: "Dr. Michael Okafor", specialty: "Neurologist", experience: "11 years", rating: 4.8, img: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=300&fit=crop" },
+    { id: 3, name: "Dr. Emily Watson", specialty: "Pediatrician", experience: "9 years", rating: 5.0, img: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=300&fit=crop" },
+    { id: 4, name: "Dr. James Rodriguez", specialty: "Dermatologist", experience: "12 years", rating: 4.7, img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=300&fit=crop" },
+    { id: 5, name: "Dr. Priya Kapoor", specialty: "General Physician", experience: "8 years", rating: 4.9, img: "https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=400&h=300&fit=crop" },
+    { id: 6, name: "Dr. David Kim", specialty: "Orthopedist", experience: "15 years", rating: 4.9, img: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&h=300&fit=crop" },
+    { id: 7, name: "Dr. Lisa Mwangi", specialty: "Ophthalmologist", experience: "10 years", rating: 4.8, img: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=300&fit=crop" }
+  ];
+  
+  // Professional Reviews Data
+  const reviewsData = [
+    { id: 1, name: "Jennifer Martinez", date: "March 15, 2026", rating: 5, comment: "Dr. Sarah Chen is absolutely incredible! She took time to explain my heart condition and made me feel at ease. The entire staff was welcoming and professional. Highly recommend MediCare!", doctor: "Dr. Sarah Chen", avatar: "JM" },
+    { id: 2, name: "Robert Thompson", date: "March 10, 2026", rating: 5, comment: "Excellent experience from start to finish. The clinic is spotless, modern, and well-organized. Dr. Michael Okafor is a true expert in his field. I'm grateful for his care.", doctor: "Dr. Michael Okafor", avatar: "RT" },
+    { id: 3, name: "Amanda Wilson", date: "March 5, 2026", rating: 5, comment: "Dr. Emily Watson is wonderful with children. My daughter actually looks forward to her checkups now! The facility is child-friendly and the nurses are so kind.", doctor: "Dr. Emily Watson", avatar: "AW" },
+    { id: 4, name: "David Chen", date: "February 28, 2026", rating: 4.8, comment: "Professional, efficient, and caring. Dr. James Rodriguez solved my skin issue after years of struggle. The treatment plan was clear and effective.", doctor: "Dr. James Rodriguez", avatar: "DC" },
+    { id: 5, name: "Maria Gonzalez", date: "February 20, 2026", rating: 5, comment: "Best healthcare experience I've ever had. Dr. Priya Kapoor is compassionate and thorough. The booking system is easy and wait times are minimal.", doctor: "Dr. Priya Kapoor", avatar: "MG" }
+  ];
+  
+  let currentUser = null;
+  let appointments = []; // each appointment has { id, doctorName, date, time, reason, status } - status can be 'active' or 'cancelled'
+  
+  function loadData() { 
+    if(currentUser) {
+      const stored = localStorage.getItem(`apps_${currentUser.email}`);
+      if(stored) {
+        appointments = JSON.parse(stored);
+      } else {
+        appointments = [];
+      }
+    }
+  }
+  function saveData() { 
+    if(currentUser) {
+      localStorage.setItem(`apps_${currentUser.email}`, JSON.stringify(appointments));
+    }
+  }
+  
+  function isPastDate(dateStr) {
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const selected = new Date(dateStr);
+    selected.setHours(0,0,0,0);
+    return selected < today;
+  }
+  
+  function validatePassword(pwd) { return pwd.length>=8 && /[0-9]/.test(pwd) && /[!@#$%^&*]/.test(pwd) && /[a-zA-Z]/.test(pwd); }
+  
+  function updateUI() { 
+    document.getElementById("dashboardUserName").innerText = currentUser.name; 
+    document.getElementById("userAvatar").innerText = currentUser.name.charAt(0).toUpperCase(); 
+  }
+  
+  let currentYear = 2026, currentMonth = 3;
+  
+  function switchSection(section) {
+    document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+    const activeMap = { dashboard:'navDash', calendar:'navCal', appointments:'navApps', doctors:'navDocs', reviews:'navRev', about:'navAbout' };
+    if(activeMap[section]) document.getElementById(activeMap[section]).classList.add('active');
+    
+    if(section === 'dashboard') renderDashboard();
+    else if(section === 'calendar') renderCalendarView();
+    else if(section === 'appointments') renderAppointments();
+    else if(section === 'doctors') renderDoctors();
+    else if(section === 'reviews') renderReviews();
+    else if(section === 'about') renderAbout();
+  }
+  
+  function renderDashboard() {
+    const activeAppointments = appointments.filter(a => a.status !== 'cancelled' && new Date(a.date) >= new Date());
+    const upcoming = activeAppointments.sort((a,b)=>new Date(a.date)-new Date(b.date))[0];
+    document.getElementById("dynamicContent").innerHTML = `
+      <div class="home-dashboard">
+        <div class="home-content">
+          <div class="card" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(2px);">
+            <h2 style="font-size: 2rem;">👋 Welcome, ${currentUser.name}</h2>
+            <p style="color: #2c3e50; margin-top: 0.5rem;">Your health journey starts here. Book appointments with top specialists.</p>
+            <hr style="margin: 1rem 0;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+              <div><h3>📋 Next Appointment</h3>${upcoming ? `<div style="border-left: 4px solid #1a73e8; padding: 0.8rem; background: white; border-radius: 16px;"><strong>${upcoming.doctorName}</strong><br>${upcoming.date} at ${upcoming.time}<br>${upcoming.reason}</div>` : '<p>No upcoming visits.</p>'}</div>
+              <div><h3>🩺 Quick Actions</h3><button class="btn-sm" onclick="switchSection(\'calendar\')"><i class="fas fa-calendar-plus"></i> Book Appointment</button><button class="btn-sm" style="background:#eef2ff; color:#1a73e8; margin-left: 10px;" onclick="switchSection('appointments')">View All</button></div>
+            </div>
+            <div style="margin-top: 1.5rem;"><h3>🏥 Why Choose MediCare</h3><p>✔ 7+ Specialist Doctors ✔ Modern Facilities ✔ 98% Patient Satisfaction ✔ 24/7 Support</p></div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  
+  function renderCalendarView() {
+    const year = currentYear, month = currentMonth;
+    const firstDay = new Date(year, month, 1);
+    const startDayOfWeek = firstDay.getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const prevMonthDays = new Date(year, month, 0).getDate();
+    const todayDate = new Date();
+    todayDate.setHours(0,0,0,0);
+    
+    let calendarHtml = `
+      <div class="calendar-container">
+        <div class="calendar-header"><div class="calendar-title">${firstDay.toLocaleString('default', { month: 'long' })} ${year}</div>
+          <div class="calendar-nav"><button onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i> Previous</button><button onclick="changeMonth(1)">Next <i class="fas fa-chevron-right"></i></button><button onclick="changeMonth(0, true)">Today</button></div>
+        </div>
+        <div class="booking-action"><button class="btn-primary" onclick="openBookingModal(null)"><i class="fas fa-plus-circle"></i> + Book New Appointment</button></div>
+        <div class="calendar-weekdays"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+        <div class="calendar-days">
+    `;
+    
+    let dayCells = [];
+    for (let i = startDayOfWeek - 1; i >= 0; i--) dayCells.push({ date: new Date(year, month-1, prevMonthDays - i), isCurrentMonth: false, dayNum: prevMonthDays - i });
+    for (let i = 1; i <= daysInMonth; i++) dayCells.push({ date: new Date(year, month, i), isCurrentMonth: true, dayNum: i });
+    let remaining = 42 - dayCells.length;
+    for (let i = 1; i <= remaining; i++) dayCells.push({ date: new Date(year, month+1, i), isCurrentMonth: false, dayNum: i });
+    
+    dayCells.forEach(cell => {
+      const dateStr = normalizeDate(cell.date);
+      const isToday = cell.date.toDateString() === todayDate.toDateString();
+      const isPast = cell.date < todayDate;
+      const dayAppointments = appointments.filter(a => a.date === dateStr);
+      let appointmentsHtml = '<div class="appointment-blocks">';
+      if (dayAppointments.length > 0) {
+        dayAppointments.forEach(app => {
+          const isCancelled = app.status === 'cancelled';
+          const cancelledClass = isCancelled ? 'cancelled' : '';
+          appointmentsHtml += `<div class="appointment-block ${cancelledClass}" onclick="event.stopPropagation(); viewAppointmentDetail('${app.id}')" title="${app.doctorName} - ${app.time} ${isCancelled ? '(CANCELLED)' : ''}"><i class="fas fa-clock"></i> ${app.time} | ${app.doctorName.substring(0, 12)}${isCancelled ? ' ❌' : ''}</div>`;
+        });
+      } else if (cell.isCurrentMonth && !isPast) { appointmentsHtml += `<div class="empty-slot" onclick="event.stopPropagation(); openBookingModal('${dateStr}')">+ Click to book</div>`; } 
+      else if (isPast && cell.isCurrentMonth) { appointmentsHtml += `<div class="empty-slot" style="color:#cbd5e1;">Past date</div>`; }
+      else { appointmentsHtml += `<div class="empty-slot"></div>`; }
+      appointmentsHtml += '</div>';
+      const pastClass = (isPast && cell.isCurrentMonth) ? 'past-date' : '';
+      calendarHtml += `<div class="calendar-day ${!cell.isCurrentMonth ? 'other-month' : ''} ${isToday ? 'today' : ''} ${pastClass}" onclick="${!isPast && cell.isCurrentMonth ? `openBookingModal('${dateStr}')` : ''}"><div class="day-number">${cell.dayNum}</div>${appointmentsHtml}</div>`;
+    });
+    calendarHtml += `</div></div>`;
+    document.getElementById("dynamicContent").innerHTML = calendarHtml;
+  }
+  
+  function changeMonth(delta, goToday = false) {
+    if (goToday) { const today = new Date(); currentYear = today.getFullYear(); currentMonth = today.getMonth(); } 
+    else { let newDate = new Date(currentYear, currentMonth + delta, 1); currentYear = newDate.getFullYear(); currentMonth = newDate.getMonth(); }
+    renderCalendarView();
+  }
+  
+  function openBookingModal(prefilledDate) {
+    const today = normalizeDate(new Date());
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `<div class="modal-content"><h3><i class="fas fa-calendar-plus"></i> Book New Appointment</h3><label>Select Date</label><input type="date" id="modalDate" min="${today}" value="${prefilledDate || ''}"><label>Select Doctor</label><select id="modalDoctor">${doctorsList.map(d => `<option value="${d.name}">${d.name} (${d.specialty})</option>`).join('')}</select><label>Select Time</label><select id="modalTime"><option>09:00 AM</option><option>10:30 AM</option><option>12:00 PM</option><option>02:00 PM</option><option>03:30 PM</option><option>05:00 PM</option></select><label>Reason</label><textarea id="modalReason" placeholder="Symptoms / reason for visit"></textarea><div class="modal-buttons"><button onclick="confirmBooking()">Confirm Booking</button><button onclick="closeModal()">Cancel</button></div></div>`;
+    document.body.appendChild(modal);
+  }
+  
+  window.confirmBooking = function() {
+    const dateInput = document.getElementById('modalDate').value;
+    const doctor = document.getElementById('modalDoctor').value;
+    const time = document.getElementById('modalTime').value;
+    const reason = document.getElementById('modalReason').value || "General checkup";
+    
+    if (!dateInput) { alert("Please select a date"); return; }
+    
+    // Normalize the date to local timezone format
+    const normalizedDate = normalizeDate(dateInput);
+    
+    if (isPastDate(normalizedDate)) { alert("❌ Cannot book appointments in the past!"); return; }
+    // Check only active (non-cancelled) appointments for conflicts
+    if (appointments.some(a => a.status !== 'cancelled' && a.doctorName === doctor && a.date === normalizedDate && a.time === time)) { 
+      alert("❌ This slot is already booked."); 
+      return; 
+    }
+    appointments.push({ id: Date.now().toString(), doctorName: doctor, date: normalizedDate, time: time, reason: reason, status: 'active' });
+    saveData();
+    closeModal();
+    renderCalendarView();
+    alert(`✅ Booked with ${doctor} on ${normalizedDate} at ${time}`);
+  };
+  
+  function viewAppointmentDetail(id) { 
+    const app = appointments.find(a => a.id === id); 
+    if(app) {
+      const statusText = app.status === 'cancelled' ? 'CANCELLED' : 'Active';
+      alert(`📋 Appointment:\nDoctor: ${app.doctorName}\nDate: ${app.date}\nTime: ${app.time}\nReason: ${app.reason}\nStatus: ${statusText}`);
+    } 
+  }
+  function closeModal() { document.querySelector('.modal-overlay')?.remove(); }
+  
+  function renderAppointments() {
+    const activeAppointments = appointments.filter(a => a.status !== 'cancelled');
+    const cancelledAppointments = appointments.filter(a => a.status === 'cancelled');
+    const items = activeAppointments.length === 0 ? '<p>No active appointments.</p>' : activeAppointments.map(a => `<div class="appointment-item"><div style="display:flex; justify-content:space-between;"><div><strong>${a.doctorName}</strong> <span class="badge">${a.date} at ${a.time}</span><br><small>${a.reason}</small></div><button class="btn-sm" style="background:#fee2e2; color:#dc2626;" onclick="cancelAppointment('${a.id}')">Cancel</button></div></div>`).join('');
+    const cancelledItems = cancelledAppointments.length === 0 ? '' : `<h3 style="margin-top:1rem; color:#dc2626;">Cancelled Appointments</h3>${cancelledAppointments.map(a => `<div class="appointment-item" style="border-left-color:#dc2626; opacity:0.7;"><div><strong>${a.doctorName}</strong> <span class="badge" style="background:#fee2e2; color:#dc2626;">${a.date} at ${a.time} (CANCELLED)</span><br><small>${a.reason}</small></div></div>`).join('')}`;
+    document.getElementById("dynamicContent").innerHTML = `<div class="card"><h2><i class="fas fa-list"></i> My Appointments</h2>${items}${cancelledItems}<hr><button class="btn-sm" onclick="switchSection('calendar')">+ Book New</button></div>`;
+  }
+  
+  window.cancelAppointment = function(id) { 
+    if(confirm("Cancel this appointment?")) { 
+      const appointmentIndex = appointments.findIndex(a => a.id === id);
+      if(appointmentIndex !== -1) {
+        appointments[appointmentIndex].status = 'cancelled';
+        saveData();
+        renderAppointments();
+        renderCalendarView();
+      }
+    } 
+  };
+  
+  function renderDoctors() {
+    const docsHtml = doctorsList.map(d => `<div class="doctor-card"><img class="doctor-img" src="${d.img}" onerror="this.src='https://randomuser.me/api/portraits/women/1.jpg'"><h3>${d.name}</h3><p>${d.specialty} ⭐ ${d.rating}</p><p style="font-size:0.8rem; color:#5f7f9e;">${d.experience} experience</p><button class="btn-sm" onclick="quickBook('${d.name}')">Book Appointment</button></div>`).join('');
+    document.getElementById("dynamicContent").innerHTML = `<div class="card"><h2><i class="fas fa-user-md"></i> Our Medical Team (7 Specialists)</h2><div class="grid-2">${docsHtml}</div></div>`;
+  }
+  
+  window.quickBook = (name) => { switchSection('calendar'); setTimeout(() => openBookingModal(null), 100); setTimeout(() => { const sel = document.getElementById('modalDoctor'); if(sel) sel.value = name; }, 150); };
+  
+  function renderReviews() {
+    const reviewsHtml = reviewsData.map(r => `
+      <div class="review-card">
+        <div class="review-header">
+          <div class="reviewer-info"><div class="reviewer-avatar">${r.avatar}</div><div class="reviewer-name"><h4>${r.name}</h4><div class="review-date">${r.date}</div></div></div>
+          <div class="review-rating">${'★'.repeat(Math.floor(r.rating))}${r.rating % 1 ? '½' : ''} (${r.rating})</div>
+        </div>
+        <div class="review-comment">"${r.comment}"</div>
+        <div class="review-doctor"><i class="fas fa-user-md"></i> Treated by: ${r.doctor}</div>
+      </div>
+    `).join('');
+    document.getElementById("dynamicContent").innerHTML = `<div class="card"><h2><i class="fas fa-star"></i> Patient Reviews (4.9 average rating)</h2><div class="grid-2">${reviewsHtml}</div></div>`;
+  }
+  
+  function renderAbout() {
+    document.getElementById("dynamicContent").innerHTML = `
+      <div class="about-section">
+        <div class="about-header"><div class="logo-icons" style="display: inline-flex; margin-bottom: 1rem;"><i class="fas fa-stethoscope"></i><i class="fas fa-heart"></i></div><h1 style="color: #0a2540;">About MediCare Clinic</h1><p style="color: #5f7f9e; margin-top: 0.5rem;">Excellence in healthcare since 2010</p></div>
+        <div class="about-stats"><div class="stat-box"><div class="stat-number">15K+</div><div class="stat-label">Happy Patients</div></div><div class="stat-box"><div class="stat-number">7</div><div class="stat-label">Expert Doctors</div></div><div class="stat-box"><div class="stat-number">98%</div><div class="stat-label">Satisfaction Rate</div></div><div class="stat-box"><div class="stat-number">24/7</div><div class="stat-label">Emergency Care</div></div></div>
+        <div class="about-text"><h3>Our Mission</h3><p>To provide accessible, compassionate, and high-quality healthcare services that improve the well-being of our community. We believe that everyone deserves exceptional medical care regardless of their background.</p><br>
+        <h3>Our Vision</h3><p>To be the most trusted healthcare partner in the region, known for innovation, clinical excellence, and patient-centered approach.</p><br>
+        <h3>Why Choose Us?</h3><ul style="margin-left: 1.5rem; margin-top: 0.5rem;"><li>⭐ Board-certified specialists with decades of combined experience</li><li>🏥 State-of-the-art medical equipment and modern facilities</li><li>💊 In-house pharmacy with competitive pricing</li><li>🚑 24/7 emergency response team</li><li>📱 Easy online booking and telemedicine options</li><li>🌍 Multilingual staff to serve diverse patients</li></ul><br>
+        <h3>Accreditations</h3><p>🏆 JCI Accredited · NABH Certified · ISO 9001:2021 · National Quality Award Winner</p><br>
+        <h3>Our Location</h3><p><i class="fas fa-map-marker-alt"></i> 77 Healthcare Boulevard, Medical District, City · <i class="fas fa-phone"></i> +1 (888) 470-1122 · <i class="fas fa-envelope"></i> care@mediclinic.com</p></div>
+      </div>
+    `;
+  }
+  
+  // FIXED AUTH Functions - Professional Login
+  function handleLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pwd = document.getElementById('loginPassword').value;
+    const loginError = document.getElementById('loginErrorMsg');
+    
+    if (!email || !pwd) {
+      loginError.innerText = "Please enter both email and password";
+      return;
+    }
+    
+    const users = JSON.parse(localStorage.getItem('medicare_users') || '[]');
+    const found = users.find(u => u.email === email && u.password === pwd);
+    
+    if(found) { 
+      // Clear any previous errors
+      loginError.innerText = "";
+      currentUser = { name: found.name, email: found.email }; 
+      loadData(); 
+      updateUI(); 
+      document.getElementById("authSection").style.display = "none"; 
+      document.getElementById("dashboardApp").style.display = "block"; 
+      switchSection('dashboard'); 
+    } else {
+      // Check if email exists but password wrong
+      const emailExists = users.some(u => u.email === email);
+      if (emailExists) {
+        loginError.innerText = "❌ Incorrect password. Please try again.";
+      } else {
+        loginError.innerText = "❌ Account not found. Please register first.";
+      }
+    }
+  }
+  
+  function handleRegister() {
+    const name = document.getElementById('regFullName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const pwd = document.getElementById('regPassword').value;
+    const confirm = document.getElementById('regConfirm').value;
+    const errorSpan = document.getElementById('regError');
+    
+    if(!name || !email) { errorSpan.innerText = "Name and email required"; return; }
+    if(!validatePassword(pwd)) { errorSpan.innerText = "Password: min 8 chars, 1 number & special character (!@#$%^&*)"; return; }
+    if(pwd !== confirm) { errorSpan.innerText = "Passwords don't match"; return; }
+    
+    const users = JSON.parse(localStorage.getItem('medicare_users') || '[]');
+    if(users.find(u=>u.email===email)) { errorSpan.innerText = "Email already registered. Please login."; return; }
+    
+    users.push({ name, email, password: pwd });
+    localStorage.setItem('medicare_users', JSON.stringify(users));
+    
+    currentUser = { name, email };
+    appointments = [];
+    saveData();
+    updateUI();
+    document.getElementById("authSection").style.display = "none";
+    document.getElementById("dashboardApp").style.display = "block";
+    switchSection('dashboard');
+  }
+  
+  function showRegisterPanel() { 
+    document.getElementById("loginErrorMsg").innerText = "";
+    document.getElementById("loginCard").style.display = "none"; 
+    document.getElementById("registerCard").style.display = "block"; 
+  }
+  function showLoginPanel() { 
+    document.getElementById("regError").innerText = "";
+    document.getElementById("loginCard").style.display = "block"; 
+    document.getElementById("registerCard").style.display = "none"; 
+  }
+  
+  function logoutUser() { 
+    currentUser = null; 
+    appointments = [];
+    document.getElementById("dashboardApp").style.display = "none"; 
+    document.getElementById("authSection").style.display = "flex"; 
+    // Clear login form fields and error
+    document.getElementById('loginEmail').value = '';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginErrorMsg').innerText = '';
+    showLoginPanel(); 
+  }
+  
+  window.changeMonth = changeMonth;
+  window.openBookingModal = openBookingModal;
+  window.confirmBooking = confirmBooking;
+  window.switchSection = switchSection;
+  window.cancelAppointment = cancelAppointment;
+  window.viewAppointmentDetail = viewAppointmentDetail;
+  window.closeModal = closeModal;
+  window.quickBook = quickBook;
+</script>
+</body>
+</html>
